@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Hangman Game</title>
+    <meta charset="utf-8" />
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'css/hangman.css' %}" media="screen" title="hangman style" charset="utf-8" />
+</head>
+<body>
+    <h2>Let's play hangman</h2>
+
+    {{ response }}
+  
+    <form name="play" action="/start" method="post">
+        {% csrf_token %}
+        <p>
+            <label>Enter your name:</label>
+            <input type="text" name="name" />
+        </p>
+        <p>
+            <label>Select difficulty:</label>
+            <select option name="level">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+        </p>
+        <p><input type="submit" value="Play Game" /></p>
+    </form> 
+</body>
+</html>

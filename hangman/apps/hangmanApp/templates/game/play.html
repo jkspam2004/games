@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Play hangman</title>
+    <meta charset="utf-8" />
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'css/hangman.css' %}" media="screen" title="hangman style" charset="utf-8" />
+</head>
+<body>
+    <h2>Welcome, {{ request.session.name }}</h2>
+    <p>Difficulty: {{ request.session.level }}</p>
+
+    <p>Your word has {{ length }} characters</p>
+    <p>Word: {{ request.session.progress }}</p>
+    <p>Guesses left: {{ request.session.guess_count }}</p>
+    <p>Missed: {{ request.session.missed }}</p> 
+    <p>Win?: {{ request.session.win }}</p> 
+
+
+    <p>secret: {{ request.session.word }}</p>
+
+    <form name="guess" id="guess" action="/guess" method="post">
+        {% csrf_token %}
+        <p>
+            <label>Guess:</label>
+            <input type="text" name="guess" placeholder="letter or word" />
+        </p>
+        <p><input type="submit" value="Guess" /></p>
+    </form>
+
+
+    {% if request.session.win %}
+        <h1>You've won</h1>
+    {% elif request.session.guess_count == 0 and not request.session.win %}
+         <h1>Sorry you lost.  Play again?</h1>
+    {% endif %}
+
+    <a href="/reset">Reset</a>
+</body>
+</html>
