@@ -11,11 +11,10 @@
     <p>Difficulty: {{ request.session.level }}</p>
 
     <p>Your word has {{ length }} characters</p>
-    <p>Word: {{ request.session.progress }}</p>
+    <p>Word: {{ word }}</p>
     <p>Guesses left: {{ request.session.guess_count }}</p>
     <p>Missed: {{ request.session.missed }}</p> 
     <p>Win?: {{ request.session.win }}</p> 
-
 
     <p>secret: {{ request.session.word }}</p>
 
@@ -30,7 +29,7 @@
 
 
     {% if request.session.win %}
-        <h1>You've won</h1>
+        <h1>You've won!</h1>
     {% elif request.session.guess_count == 0 and not request.session.win %}
          <h1>Sorry you lost.  Play again?</h1>
     {% endif %}

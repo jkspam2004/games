@@ -24,6 +24,8 @@ def start(request):
     request.session['win'] = False
     request.session['missed'] = {} 
 
+    # store the characters of the word as keys in a dictionary
+    # the values are lists of character positions in the word 
     char_dict = {}
     for index, char in enumerate(request.session['word']):
         print index, char, type(index), type(char)
@@ -54,6 +56,7 @@ def get_word(level):
 def play(request):
     context = {
         'length': len(request.session['word']),
+        'word': ' '.join(request.session['progress'])
     }
 
     return render(request, 'game/play.html', context) 
