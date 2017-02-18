@@ -8,32 +8,44 @@
 </head>
 <body>
     <h2>Welcome, {{ request.session.name }}</h2>
-    <p>Difficulty: {{ request.session.level }}</p>
-
     <p>Your word has {{ length }} characters</p>
-    <p>Word: {{ word }}</p>
-    <p>Guesses left: {{ request.session.guess_count }}</p>
-    <p>Missed: {{ request.session.missed }}</p> 
-    <p>Win?: {{ request.session.win }}</p> 
 
-    <p>secret: {{ request.session.word }}</p>
+    <div id="wordPlay">
+        <p>Word: {{ word }}</p>
+        <p>Guesses left: {{ guess_count }}</p>
+        <!--<p>Missed: {% for key in missed.keys %}{{ key }} {% endfor %}</p> -->
+        <p>Missed: {{ missed }}</p>
 
-    <form name="guess" id="guess" action="/guess" method="post">
-        {% csrf_token %}
-        <p>
-            <label>Guess:</label>
-            <input type="text" name="guess" placeholder="letter or word" />
-        </p>
-        <p><input type="submit" value="Guess" /></p>
-    </form>
+        <p>secret: {{ request.session.secret }}</p>
 
+        {% if win %}
+            <h1>You got it!</h1>
+            <a href="/reset">Play Again</a>
+        {% elif secret %}
+             <h1>You have no more guesses. The word is {{ request.session.secret }}.  Play again?</h1>
+            <a href="/reset">Play Again</a>
+        {% endif %}
 
-    {% if request.session.win %}
-        <h1>You've won!</h1>
-    {% elif request.session.guess_count == 0 and not request.session.win %}
-         <h1>Sorry you lost.  Play again?</h1>
-    {% endif %}
+    </div>
 
-    <a href="/reset">Reset</a>
+    <div id="errors">
+    </div>
+
+    <div id="formDiv">
+        {% if not game_over %}
+        <form name="guess" id="guess_form" action="/guess" method="post">
+            {% csrf_token %}
+            <p>
+                <label>Guess:</label>
+                <input type="text" id="guess_text" name="guess" placeholder="letter or word" />
+            </p>
+            <p><input id="submit" type="submit" value="Guess" /></p>
+        </form>
+        {% endif %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+
 </body>
 </html>
