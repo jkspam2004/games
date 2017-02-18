@@ -31,7 +31,7 @@
                     html_str += "<p>Missed: " + data.missed + "</p>";
 
                     if (data.win) {
-                        html_str += "<h1>You've Won!</h1>";
+                        html_str += "<h1>You got it!</h1>";
                         html_str += '<a href="/reset">Play Again</a>'
                     } else if (data.secret) {
                         html_str += "<h1>You have no more guesses.  The word is "  + data.secret + ".</h1>";

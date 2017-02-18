@@ -133,5 +133,20 @@ def process(request):
 
 # reset(): resets session variables
 def reset(request):
-    request.session.clear()
+    try:
+        for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict']:
+            print key
+            del request.session[key]
+    except KeyError:
+        print "Oops!  No such key"
+
     return HttpResponseRedirect(reverse('index_url'))
+
+# logout(): not yet implemented
+def logout(request):
+    try:
+        del request.session['name']
+    except KeyError:
+        pass
+    return HttpResponse("You're logged out.")
+

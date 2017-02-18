@@ -9,13 +9,11 @@
 <body>
     <h2>Let's play hangman</h2>
 
-    {{ response }}
-  
     <form name="play" action="/start" method="post">
         {% csrf_token %}
         <p>
-            <label>Enter your name:</label>
-            <input type="text" name="name" />
+            <label for="name">Enter your name:</label>
+            <input type="text" name="name" value="{{ request.session.name }}" />
         </p>
         <p>
             <label>Select difficulty:</label>
