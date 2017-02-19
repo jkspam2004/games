@@ -47,6 +47,7 @@ def start(request):
 def get_word(level):
     url = "http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words?"
     url += "difficulty=" + level
+
     response = requests.get(url).content
     wordlist = response.split("\n")
     word = random.choice(wordlist)
@@ -75,14 +76,14 @@ def guess(request):
         if guess in request.session['missed'] or re.search(regex, request.session['word']): 
             return JsonResponse({ "error": "You have already guessed that" }) 
 
+        missed = False
         # guessing a word
         if len(guess) > 1:
             # correct word guess
             if guess == request.session['secret']:
                 request.session['word'] = guess
             else:
-                request.session['missed'][guess] = 1
-                request.session['guess_count'] -= 1
+                missed = True
         # guessing a character
         else: 
             # correct character guess
@@ -93,10 +94,15 @@ def guess(request):
                 request.session['word'] = ''.join(progress_list)
 
             else:
-                request.session['missed'][guess] = 1
-                request.session['guess_count'] -= 1
+                missed = True
+
+        # add guess to missed list and decrement count
+        if missed:
+            request.session['missed'][guess] = 1
+            request.session['guess_count'] -= 1
 
         context = process(request)
+        context['missed'] = missed 
      
         return JsonResponse(context)
     else:
@@ -117,12 +123,12 @@ def process(request):
         game_over = True
 
     context = {
-        'length'     : len(request.session['secret']),
-        'word'       : ' '.join(request.session['word']),
-        'guess_count': request.session['guess_count'],
-        'missed'     : ' '.join(sorted(request.session['missed'])),
-        'win'        : win,
-        'game_over'  : game_over,
+        'length'         : len(request.session['secret']),
+        'word'           : ' '.join(request.session['word']),
+        'guess_count'    : request.session['guess_count'],
+        'missed_guesses' : ' '.join(sorted(request.session['missed'])),
+        'win'            : win,
+        'game_over'      : game_over,
     }
 
     # reveal the secret word
@@ -130,6 +136,10 @@ def process(request):
         context['secret'] = request.session['secret']
 
     return context
+
+# get_count: return the current guess count
+def get_count(request):
+    return JsonResponse({ 'guess_count': request.session['guess_count'] });
 
 # reset(): resets session variables
 def reset(request):

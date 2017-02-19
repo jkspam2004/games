@@ -1,5 +1,11 @@
 (function () {
+
     $(document).ready(function() {
+        setup = load_canvas();
+        $.get("/count", function(res) {
+            setup(res.guess_count);
+        });
+
         $('#guess_form').on('submit', function(event){
             if ($.trim($("#guess_text").val()) === "") {
                 $("div#errors").html("<p>You did not enter a guess</p>");
@@ -19,16 +25,20 @@
             async: 'true', 
             data: { guess : $("#guess_text").val() },
             success: function(data) {
-                $("#guess_text").val("");
-                //$("div#wordPlay").html(data); // render the partial html in div
+                $("#guess_text").val(""); // clear the input textbox
                 var html_str = "";
 
                 if (data.error) {
                     $("div#errors").html("<p>" + data.error + "</p>");
                 } else {
+                    // display the progress so far
                     html_str += "<p>Word: " + data.word + "</p>";
                     html_str += "<p>Guesses left: " + data.guess_count + "</p>";
-                    html_str += "<p>Missed: " + data.missed + "</p>";
+                    html_str += "<p>Missed: " + data.missed_guesses + "</p>";
+
+                    if (data.missed) { // drop an apple if missed guess
+                        setup(data.guess_count);
+                    }
 
                     if (data.win) {
                         html_str += "<h1>You got it!</h1>";
@@ -37,7 +47,8 @@
                         html_str += "<h1>You have no more guesses.  The word is "  + data.secret + ".</h1>";
                         html_str += '<a href="/reset">Play Again</a>'
                     }
-                    $("div#wordPlay").html(html_str);
+
+                    $("div#guessDiv").html(html_str);
                     $("div#errors").html(""); // clear any previous errors
 
                     if (data.game_over) {

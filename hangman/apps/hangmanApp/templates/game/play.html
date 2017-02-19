@@ -7,45 +7,56 @@
     <link rel="stylesheet" href="{% static 'css/hangman.css' %}" media="screen" title="hangman style" charset="utf-8" />
 </head>
 <body>
-    <h2>Welcome, {{ request.session.name }}</h2>
-    <p>Your word has {{ length }} characters</p>
+    <div id="container">
+        <div id="gameBoard" style="width: 700px;">
+            <h2>Welcome, {{ request.session.name }}</h2>
+            <p>Your word has {{ length }} characters</p>
 
-    <div id="wordPlay">
-        <p>Word: {{ word }}</p>
-        <p>Guesses left: {{ guess_count }}</p>
-        <!--<p>Missed: {% for key in missed.keys %}{{ key }} {% endfor %}</p> -->
-        <p>Missed: {{ missed }}</p>
+    
+            <div id="wordPlay">
+                <div id="guessDiv">      
+                    <p>Word: {{ word }}</p>
+                    <p>Guesses left: {{ guess_count }}</p>
+                    <p>Missed: {{ missed_guesses }}</p>
 
-        <p>secret: {{ request.session.secret }}</p>
+                    <p>secret: {{ request.session.secret }}</p>
 
-        {% if win %}
-            <h1>You got it!</h1>
-            <a href="/reset">Play Again</a>
-        {% elif secret %}
-             <h1>You have no more guesses. The word is {{ request.session.secret }}.  Play again?</h1>
-            <a href="/reset">Play Again</a>
-        {% endif %}
+                    {% if win %}
+                        <h1>You got it!</h1>
+                        <a href="/reset">Play Again</a>
+                    {% elif secret %}
+                         <h1>You have no more guesses. The word is {{ request.session.secret }}.  Play again?</h1>
+                        <a href="/reset">Play Again</a>
+                    {% endif %}
+                </div> <!-- end div#guessDiv -->
 
+                <div id="errors"></div>
+
+                <div id="formDiv">
+                    {% if not game_over %}
+                    <form name="guess" id="guess_form" action="/guess" method="post">
+                        {% csrf_token %}
+                        <p>
+                            <label>Guess:</label>
+                            <input type="text" id="guess_text" name="guess" placeholder="letter or word" />
+                        </p>
+                        <p><input id="submit" type="submit" value="Guess" /></p>
+                    </form>
+                    {% endif %}
+                </div> <!-- end div#formDiv -->
+            </div> <!-- end div#wordPlay -->
+
+            <div id="info">test data</div>
+
+        </div> <!-- end div#gameBoard -->
+
+
+        <canvas id="canvasRegn" width="600" height="450" ></canvas>
     </div>
 
-    <div id="errors">
-    </div>
-
-    <div id="formDiv">
-        {% if not game_over %}
-        <form name="guess" id="guess_form" action="/guess" method="post">
-            {% csrf_token %}
-            <p>
-                <label>Guess:</label>
-                <input type="text" id="guess_text" name="guess" placeholder="letter or word" />
-            </p>
-            <p><input id="submit" type="submit" value="Guess" /></p>
-        </form>
-        {% endif %}
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/app.js' %}"></script>
+    <script src="{% static 'js/canvas.js' %}"></script>
 
 </body>
 </html>

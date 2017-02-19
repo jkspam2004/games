@@ -3,6 +3,17 @@
     font-size: large;
     
 }
+#container {
+    width: 1400px;
+}
 #errors {
     color: red;
+}
+#gameBoard, #canvasRegn {
+    display: inline-block;
+    vertical-align: top;
+}
+#wordPlay, #info {
+    display: inline-block;
+    vertical-align: top;
 }

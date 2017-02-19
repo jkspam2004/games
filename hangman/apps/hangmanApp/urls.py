@@ -7,5 +7,6 @@ urlpatterns = [
     url(r'^play$', views.play, name="play_url"),
     url(r'^guess$', views.guess, name="guess_url"),
     url(r'^reset$', views.reset, name="reset_url"),
+    url(r'^count$', views.get_count, name="count_url"),
 ]
 
