@@ -60,8 +60,10 @@ def get_word(level):
 
 # play(): displays the game, the form for guessing and guesses so far
 def play(request):
-    context = process(request)
+    if 'secret' not in request.session:
+        return HttpResponseRedirect(reverse('index_url'))
 
+    context = process(request)
     return render(request, 'game/play.html', context) 
 
 # guess(): endpoint for /guess post action
@@ -148,10 +150,16 @@ def process(request):
 
 # get_count(): return the current guess count
 def get_count(request):
+    if 'secret' not in request.session:
+        return HttpResponseRedirect(reverse('index_url'))
+
     return JsonResponse({ 'guess_count': request.session['guess_count'] });
 
 # reset(): resets session variables
 def reset(request):
+    if 'secret' not in request.session:
+        return HttpResponseRedirect(reverse('index_url'))
+
     try:
         for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict']:
             del request.session[key]
@@ -162,6 +170,9 @@ def reset(request):
 
 # logout()
 def logout(request):
+    if 'secret' not in request.session:
+        return HttpResponseRedirect(reverse('index_url'))
+
     try:
         request.session.clear()
     except Exception, e:
@@ -171,8 +182,14 @@ def logout(request):
 
 # leaderboard(): show scores and your performance
 def leaderboard(request):
+    if 'secret' not in request.session:
+        return HttpResponseRedirect(reverse('index_url'))
+
     return render(request, 'dashboard/leaderboard.html')
 
 # settings(): options to choose theme, customize word bank, choose number of guesses
 def settings(request):
+    if 'secret' not in request.session:
+        return HttpResponseRedirect(reverse('index_url'))
+
     return render(request, 'dashboard/settings.html')
