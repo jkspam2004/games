@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
 import requests
@@ -23,6 +23,10 @@ def start(request):
 
         request.session['word'] = "_" * len(request.session['secret'])
         request.session['missed'] = {} 
+
+        # turn on the secret word for development
+        if request.POST['name'] == 'Bob':
+            request.session['debug'] = True
 
         # store the characters of the word as keys in a dictionary
         # the values are lists of character positions in the word 
@@ -70,39 +74,44 @@ def guess(request):
         # check for valid characters 
         regex = re.escape(guess) 
         if not re.search(r'[a-z]', regex):
-            return JsonResponse({ "error": "Special characters not allowed" }) 
+            return JsonResponse({ "error": "Special characters are not allowed." }) 
 
         # check to see if letter already guessed from the missed list and correct guesses
         if guess in request.session['missed'] or re.search(regex, request.session['word']): 
-            return JsonResponse({ "error": "You have already guessed that" }) 
+            return JsonResponse({ "error": "You have already guessed that." }) 
 
-        missed = False
+        missed = None
+        occurrences = None
         # guessing a word
         if len(guess) > 1:
             # correct word guess
             if guess == request.session['secret']:
                 request.session['word'] = guess
             else:
-                missed = True
+                missed = "Your guess '{}' is incorrect." .format(guess)
         # guessing a character
         else: 
             # correct character guess
             if guess in request.session['char_dict']:
+                times = "times." if len(request.session['char_dict'][guess]) > 1 else "time."
+                occurrences = "Character '{}' appears {} {}" .format(guess, str(len(request.session['char_dict'][guess])), times)
+                # reveal occurrence of the correct character guess in the word
                 progress_list = list(request.session['word'])
                 for position in request.session['char_dict'][guess]:
                     progress_list[position] = guess
                 request.session['word'] = ''.join(progress_list)
 
             else:
-                missed = True
+                missed = "Character '{}' is not part of the word." .format(guess)
 
-        # add guess to missed list and decrement count
+        # add the guess to dictionary of misses and decrement count
         if missed:
             request.session['missed'][guess] = 1
             request.session['guess_count'] -= 1
 
         context = process(request)
         context['missed'] = missed 
+        context['occurrences'] = occurrences
      
         return JsonResponse(context)
     else:
@@ -137,7 +146,7 @@ def process(request):
 
     return context
 
-# get_count: return the current guess count
+# get_count(): return the current guess count
 def get_count(request):
     return JsonResponse({ 'guess_count': request.session['guess_count'] });
 
@@ -145,18 +154,25 @@ def get_count(request):
 def reset(request):
     try:
         for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict']:
-            print key
             del request.session[key]
-    except KeyError:
-        print "Oops!  No such key"
+    except KeyError, e:
+        print "Oops!  No such key", e
 
     return HttpResponseRedirect(reverse('index_url'))
 
-# logout(): not yet implemented
+# logout()
 def logout(request):
     try:
-        del request.session['name']
-    except KeyError:
-        pass
-    return HttpResponse("You're logged out.")
+        request.session.clear()
+    except Exception, e:
+        print "Oops! Exception", e
 
+    return HttpResponseRedirect(reverse('index_url'))
+
+# leaderboard(): show scores and your performance
+def leaderboard(request):
+    return render(request, 'dashboard/leaderboard.html')
+
+# settings(): options to choose theme, customize word bank, choose number of guesses
+def settings(request):
+    return render(request, 'dashboard/settings.html')

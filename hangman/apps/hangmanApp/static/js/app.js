@@ -1,5 +1,4 @@
 (function () {
-
     $(document).ready(function() {
         setup = load_canvas();
         $.get("/count", function(res) {
@@ -8,7 +7,9 @@
 
         $('#guess_form').on('submit', function(event){
             if ($.trim($("#guess_text").val()) === "") {
-                $("div#errors").html("<p>You did not enter a guess</p>");
+                $("#errors").html("You did not enter a guess");
+                $("#occurrences").html("");
+                $("#missed").html("");
                 return false;
             }
 
@@ -25,34 +26,42 @@
             async: 'true', 
             data: { guess : $("#guess_text").val() },
             success: function(data) {
-                $("#guess_text").val(""); // clear the input textbox
                 var html_str = "";
 
+                $("#guess_text").val(""); // clear the input textbox
+
                 if (data.error) {
-                    $("div#errors").html("<p>" + data.error + "</p>");
+                    $("#errors").html(data.error);
+                    $("#occurrences").html("");
+                    $("#missed").html("");
                 } else {
                     // display the progress so far
-                    html_str += "<p>Word: " + data.word + "</p>";
-                    html_str += "<p>Guesses left: " + data.guess_count + "</p>";
-                    html_str += "<p>Missed: " + data.missed_guesses + "</p>";
+                    $("#word").html(data.word);
+                    $("#guess_count").html(data.guess_count);
+
+                    // messages: correct letter, missed guess
+                    $("#errors").html(""); // clear any previous errors
+                    $("#occurrences").html(data.occurrences); // correct letter occurrence frequency
+                    $("#missed").html(data.missed); // missed guess message
+
+                    // game status
+                    if (data.win) {
+                        html_str += "<h3 class='text-success'>You guessed it!</h3>";
+                        html_str += "<a href='/reset' class='btn btn-primary'>Play Again</a>"
+                    } else if (data.secret) {
+                        html_str += "<h3>You have no more guesses.  The word is '"  + data.secret + "'.</h3>";
+                        html_str += "<a href='/reset' class='btn btn-primary'>Play Again</a>"
+                    }
+                    $("div#status").html(html_str);
+
+                    $("#missed_guesses").html(data.missed_guesses); // list of missed guesses
 
                     if (data.missed) { // drop an apple if missed guess
-                        setup(data.guess_count);
+                        setup(data.guess_count); 
                     }
-
-                    if (data.win) {
-                        html_str += "<h1>You got it!</h1>";
-                        html_str += '<a href="/reset">Play Again</a>'
-                    } else if (data.secret) {
-                        html_str += "<h1>You have no more guesses.  The word is "  + data.secret + ".</h1>";
-                        html_str += '<a href="/reset">Play Again</a>'
-                    }
-
-                    $("div#guessDiv").html(html_str);
-                    $("div#errors").html(""); // clear any previous errors
-
-                    if (data.game_over) {
-                        $("#formDiv").css("display", "none");
+                    
+                    if (data.game_over) { // hide the form when game over
+                        $("#guessForm").css("display", "none");
                     }
                 }
             },

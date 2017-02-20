@@ -4,59 +4,96 @@
     <title>Play hangman</title>
     <meta charset="utf-8" />
     {% load staticfiles %}
-    <link rel="stylesheet" href="{% static 'css/hangman.css' %}" media="screen" title="hangman style" charset="utf-8" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" media="screen" title="bootstrap" charset="utf-8" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}" media="screen" title="bootstrap-theme" charset="utf-8" />
+    <link rel="stylesheet" href="{% static 'css/hangman.css' %}" type="text/css" title="hangman style" charset="utf-8" />
 </head>
 <body>
-    <div id="container">
-        <div id="gameBoard" style="width: 700px;">
-            <h2>Welcome, {{ request.session.name }}</h2>
-            <p>Your word has {{ length }} characters</p>
+    <nav class="navbar navbar-inverse mynav" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Hangman</a>
+            </div> <!-- navbar-header -->
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle dropdown-1" data-toggle="dropdown">
+                            Welcome, {{ request.session.name }} <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/leaderboard">Leaderboard</a></li>
+                            <li><a href="/settings">Settings</a></li>
+                            <li><a href="/logout">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul> <!-- ul.nav navbar-nav navbar-right -->
+            </div> <!-- div.collapse -->
+        </div> <!-- container-fluid -->
+    </nav>
 
-    
-            <div id="wordPlay">
-                <div id="guessDiv">      
-                    <p>Word: {{ word }}</p>
-                    <p>Guesses left: {{ guess_count }}</p>
-                    <p>Missed: {{ missed_guesses }}</p>
+    <div class="container-fluid">
 
-                    <p>secret: {{ request.session.secret }}</p>
+        <div id="wordPlay" class="col-md-5">
+            <h4>Your word has {{ length }} characters</h4>
 
-                    {% if win %}
-                        <h1>You got it!</h1>
-                        <a href="/reset">Play Again</a>
-                    {% elif secret %}
-                         <h1>You have no more guesses. The word is {{ request.session.secret }}.  Play again?</h1>
-                        <a href="/reset">Play Again</a>
-                    {% endif %}
-                </div> <!-- end div#guessDiv -->
+            <div id="guessDiv" style="margin-bottom: 50px;">      
+                <h3><span style="padding-right: 50px;">Word: </span><span id="word">{{ word }}</span></h3>
+                <h4><span style="padding-right: 15px;">Guesses left:</span><span id="guess_count">{{ guess_count }}</span></h4>
+            </div> <!-- end div#guessDiv -->
 
-                <div id="errors"></div>
+            <h4 id="info">
+                <span id="errors" class="text-danger"></span>
+                <span id="occurrences" class="text-success"></span>
+                <span id="missed" class="text-danger"></span>
+            </h4>
 
-                <div id="formDiv">
-                    {% if not game_over %}
-                    <form name="guess" id="guess_form" action="/guess" method="post">
-                        {% csrf_token %}
-                        <p>
-                            <label>Guess:</label>
-                            <input type="text" id="guess_text" name="guess" placeholder="letter or word" />
-                        </p>
-                        <p><input id="submit" type="submit" value="Guess" /></p>
-                    </form>
-                    {% endif %}
-                </div> <!-- end div#formDiv -->
-            </div> <!-- end div#wordPlay -->
+            <!-- form for entering guess -->
+            <div id="guessForm">
+                {% if not game_over %}
+                <form name="guess" id="guess_form" action="/guess" method="post" class="form-inline">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" id="guess_text" name="guess" placeholder="Letter or Word" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-default" class="form-control">Guess</button>
+                    </div>
+                </form>
+                {% endif %}
+            </div> <!-- end div#guessForm -->
 
-            <div id="info">test data</div>
+            <!-- game status -->
+            <div id="status">
+            {% if win %}
+                <h3 id="win" class="text-success">You guessed it!</h3>
+                <a id="reset" href="/reset" class="btn btn-primary">Play Again</a>
+            {% elif secret %}
+                <h3 id="secret">You have no more guesses. The word is '{{ request.session.secret }}'.</h3>
+                <a id="reset" href="/reset" class="btn btn-primary">Play Again</a>
+            {% endif %}
+            </div>
 
-        </div> <!-- end div#gameBoard -->
+        </div> <!-- end div#wordPlay -->
+ 
+        <div id="canvas" class="col-md-7">
+            <h4>Missed: <span id="missed_guesses" class="text-danger">{{ missed_guesses }}</span></h4>
+            <canvas id="canvasRegn" width="600" height="450"></canvas>
+        </div>
+    </div> <!-- end div.container -->
 
-
-        <canvas id="canvasRegn" width="600" height="450" ></canvas>
-    </div>
+    {% if request.session.debug %}
+    <p>secret: {{ request.session.secret }}</p>
+    {% endif %}
 
     <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/app.js' %}"></script>
     <script src="{% static 'js/canvas.js' %}"></script>
-
 </body>
 </html>

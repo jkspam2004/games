@@ -8,5 +8,8 @@ urlpatterns = [
     url(r'^guess$', views.guess, name="guess_url"),
     url(r'^reset$', views.reset, name="reset_url"),
     url(r'^count$', views.get_count, name="count_url"),
+    url(r'^logout$', views.logout, name="logout_url"),
+    url(r'^leaderboard$', views.leaderboard, name="leaderboard_url"),
+    url(r'^settings$', views.settings, name="settings_url"),
 ]
 
