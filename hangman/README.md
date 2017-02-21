@@ -23,7 +23,7 @@ Change into the hangman base directory
 cd games/hangman
 ```
 
-Create virtual environment.  
+Create virtual environment  
 ```
 virtualenv -p <python2 executable> venv
 ```
@@ -50,10 +50,9 @@ python manage.py runserver
 ```
 
 Play game on your browser
-```
-Open [hangman](http://localhost:7000) in your browser.
-Also deployed [here](http://hangman.emilyatwork.com)
-```
+
+* Open [hangman](http://localhost:7000) in your browser
+* Also deployed [here](http://hangman.emilyatwork.com)
 
 ## Implementation
 
