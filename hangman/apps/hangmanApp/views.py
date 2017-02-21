@@ -38,7 +38,6 @@ def start(request):
                 char_dict[char] = [index]
 
         request.session['char_dict'] = char_dict
-        print request.session['char_dict']
 
         return HttpResponseRedirect(reverse('play_url'))
     else:
