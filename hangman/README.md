@@ -13,46 +13,47 @@ Install [Python](https://www.python.org) and [virtualenv](https://virtualenv.pyp
 
 ## Installing
 
-1. Clone the project from github
+Clone the project from github
 ```
 git clone https://github.com/jkspam2004/games.git
 ```
 
-2. Change into the hangman base directory
+Change into the hangman base directory
 ```
 cd games/hangman
 ```
 
-3. Create virtual environment.  
+Create virtual environment.  
 ```
 virtualenv -p <python2 executable> venv
 ```
 
-4. Bring up the virtual environment
+Bring up the virtual environment
 ```
 source venv/bin/activate
 ```
 
-5. Install Python packages
+Install Python packages
 ```
 pip install -r requirements.txt
 ```
 
-6. Run migrations
+Run migrations
 ```
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-7. Run the server
+Run the server
 ```
 python manage.py runserver
 ```
 
-8. Play game on your browser
+Play game on your browser
+```
 Open [hangman](http://localhost:7000) in your browser.
-
 Also deployed [here](http://hangman.emilyatwork.com)
+```
 
 ## Implementation
 
