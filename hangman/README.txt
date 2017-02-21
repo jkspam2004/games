@@ -1,5 +1,7 @@
 # Hangman Game
 
+A web version of this documentation at https://github.com/jkspam2004/games/tree/master/hangman
+
 Hangman is a game where the secret-keeper (in this case, the computer) thinks of a word, and the guesser (the user) tries to guess it one letter at a time. The guesser has six guesses. If the guesser guesses a letter which is part of the word, the secret-keeper will reveal all occurrences of that letter in the word. If the guesser guesses a correct letter such that all letters are now revealed, the game is over and player 2 has won. Instead if player 2 runs out of guesses before the whole word is discovered, the game is over and player 1 has won.
 
 ## Game Rules
@@ -13,46 +15,31 @@ Install [Python](https://www.python.org) and [virtualenv](https://virtualenv.pyp
 
 ## Installing
 
-Clone the project from github
-```
+1. Clone the project from github
 git clone https://github.com/jkspam2004/games.git
-```
 
-Change into the hangman base directory
-```
+2. Change into the hangman base directory
 cd games/hangman
-```
 
-Create virtual environment  
-```
+3. Create virtual environment  
 virtualenv -p <python2 executable> venv
-```
 
-Bring up the virtual environment
-```
+4. Bring up the virtual environment
 source venv/bin/activate
-```
 
-Install Python packages
-```
+5. Install Python packages
 pip install -r requirements.txt
-```
 
-Run migrations
-```
+6. Run migrations
 python manage.py makemigrations
 python manage.py migrate
-```
 
-Run the server
-```
+7. Run the server
 python manage.py runserver
-```
 
-Play game on your browser
-
-* Open [hangman](http://localhost:7000) in your browser
-* Also deployed [here](http://hangman.emilyatwork.com)
+8. Play game on your browser
+Open http://localhost:7000 in your browser
+Also deployed at http://hangman.emilyatwork.com
 
 ## Implementation
 
@@ -66,7 +53,6 @@ In the next version I plan to implement a leaderboard as well as a settings menu
 
 Some files not shown in the below structure for brevity.  The heavy lifting is done in the controller, views.py.  Upon game start, a request is made to a word dictionary API.  The guess count is initiated to 6.  Logic determines if the correct letter or word is guessed.  If the guess is incorrect, the count is decremented by one.  The gameboard is play.html.  The jQuery code is found in app.js.  The game is over when the player guesses the correct word or the guess count goes to 0 without a correct guess.
 
-```
 hangman/
     apps/
         hangmanApp/
@@ -99,8 +85,6 @@ hangman/
     README.md
     README.txt
     requirements.txt
-```
-
 
 ## Extensions
 
