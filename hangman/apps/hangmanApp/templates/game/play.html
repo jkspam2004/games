@@ -39,9 +39,10 @@
     </nav>
 
     <div class="container-fluid">
+        <h1 class="text-center" style="margin-bottom: 30px;"><em>Can you guess the word before all the apples fall?</em></h1>
 
-        <div id="wordPlay" class="col-md-5">
-            <h4>Your word has {{ length }} characters</h4>
+        <div id="wordPlay" class="col-md-4 col-md-offset-1">
+            <h4>Your word has {{ length }} characters.</h4>
 
             <div id="guessDiv" style="margin-bottom: 50px;">      
                 <h3><span style="padding: 0 10px 0 42px;">Word: </span><span id="word">{{ word }}</span></h3>
@@ -60,10 +61,10 @@
                 <form name="guess" id="guess_form" action="/guess" method="post" class="form-inline">
                     {% csrf_token %}
                     <div class="form-group">
-                        <input type="text" id="guess_text" name="guess" placeholder="Letter or Word" class="form-control" />
+                        <input type="text" id="guess_text" name="guess" placeholder="Letter or Word" class="form-control" autoFocus="autoFocus"/>
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-default" class="form-control">Guess</button>
+                        <button type="submit" class="btn btn-primary" class="form-control">Guess</button>
                     </div>
                 </form>
                 {% endif %}
@@ -75,7 +76,7 @@
                 <h3 id="win" class="text-success">You guessed it!</h3>
                 <a id="reset" href="/reset" class="btn btn-primary">Play Again</a>
             {% elif secret %}
-                <h3 id="secret">You have no more guesses. The word is '{{ request.session.secret }}'.</h3>
+                <h4 id="secret" class="text-info">You have no more guesses. The word is <em>'<a target="_blank" href="http://www.dictionary.com/browse/{{ request.session.secret }}">{{ request.session.secret }}</a>'</em>.</h4>
                 <a id="reset" href="/reset" class="btn btn-primary">Play Again</a>
             {% endif %}
             </div>
@@ -83,8 +84,8 @@
         </div> <!-- end div#wordPlay -->
  
         <div id="canvas" class="col-md-7">
-            <h4>Missed: <span id="missed_guesses" class="text-danger">{{ missed_guesses }}</span></h4>
-            <canvas id="canvasRegn" width="600" height="450"></canvas>
+            <h4>Missed: <span id="missed_guesses" class="text-danger" style="margin-left: 10px;">{{ missed_guesses }}</span></h4>
+            <canvas id="canvasRegn" width="600" height="450" style="border-radius: 20px; margin-top: 15px; box-shadow: 10px 10px 5px #888888"></canvas>
         </div>
     </div> <!-- end div.container -->
 

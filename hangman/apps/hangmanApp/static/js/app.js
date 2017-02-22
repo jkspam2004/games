@@ -7,7 +7,7 @@
 
         $('#guess_form').on('submit', function(event){
             if ($.trim($("#guess_text").val()) === "") {
-                $("#errors").html("You did not enter a guess");
+                $("#errors").html("You did not enter a guess.");
                 $("#occurrences").html("");
                 $("#missed").html("");
                 return false;
@@ -49,7 +49,7 @@
                         html_str += "<h3 class='text-success'>You guessed it!</h3>";
                         html_str += "<a href='/reset' class='btn btn-primary'>Play Again</a>"
                     } else if (data.secret) {
-                        html_str += "<h3>You have no more guesses.  The word is '"  + data.secret + "'.</h3>";
+                        html_str += "<h4 class='text-info'>You have no more guesses.  The word is <em>'<a target='_blank' href='http://www.dictionary.com/browse/" + data.secret + "'>"  + data.secret + "</a>'</em>.</h4>";
                         html_str += "<a href='/reset' class='btn btn-primary'>Play Again</a>"
                     }
                     $("div#status").html(html_str);

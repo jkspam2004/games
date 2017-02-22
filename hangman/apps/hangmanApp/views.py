@@ -75,7 +75,7 @@ def guess(request):
         # check for valid characters 
         regex = re.escape(guess) 
         if not re.search(r'[a-z]', regex):
-            return JsonResponse({ "error": "Special characters are not allowed." }) 
+            return JsonResponse({ "error": "Special characters and numbers are not valid." }) 
 
         # check to see if letter already guessed from the missed list and correct guesses
         if guess in request.session['missed'] or re.search(regex, request.session['word']): 

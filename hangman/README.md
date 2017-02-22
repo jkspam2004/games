@@ -109,6 +109,22 @@ hangman/
 * Add a configurable "difficulty level" and adjust the words that are used based on the user's preference
 * Show visual diagram that indicates incorrect guesses (apples falling from tree instead of traditional hangman)
 
+### Next Release plan
+* Children's version: words for K-8 grade level
+* Timer during game play
+* Leaderboard to display high scores
+* Option to choose number of possible guesses
+* Option to select visual theme for "the hangman"
+* CLI version
+* Add word category
+
+
+* Scoring system:
+  * 5 points for solving the word
+  * 10 points for solving on first attempt
+  * 2 points additional for solving under 1 minute
+  * 1 point additional for solving the word with less than 3 wrong guesses
+
 ## Built With
 
 * [Python Django](https://www.djangoproject.com/) 
