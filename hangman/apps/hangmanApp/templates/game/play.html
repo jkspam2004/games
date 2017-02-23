@@ -20,6 +20,9 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="/">Hangman</a>
+                <ul class="nav navbar-nav navbar-text">
+                    <li>Level {{ request.session.level }}</li>
+                <ul>
             </div> <!-- navbar-header -->
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav navbar-right">

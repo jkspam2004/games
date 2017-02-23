@@ -17,43 +17,54 @@ def index(request):
 def start(request):
     if request.method == 'POST':
         request.session['name'] = request.POST['name']
-        request.session['api_attempt'] = 0
-
-        # get the word 
-        secret = get_word(request)
-        if secret == 'ERROR: API GET':
-            return JsonResponse({ "ERROR": "API GET" })
-        else:
-            request.session['secret'] = secret
- 
-        request.session['guess_count'] = 6 # no. of guesses allowed
-        request.session['char_dict'] = {}  # dictionary of characters in secret word
-        request.session['missed'] = {}     # dictionary of missed characters 
-        request.session['word'] = "_" * len(request.session['secret'])
-
-        # turn on the secret word for development
-        if request.POST['name'] == 'Bob':
-            request.session['debug'] = True
-
-        # store the characters of the word as keys in a dictionary
-        # the values are lists of character positions in the word 
-        char_dict = {}
-        for index, char in enumerate(request.session['secret']):
-            if char in char_dict:
-                char_dict[char].append(index)
-            else:
-                char_dict[char] = [index]
-        request.session['char_dict'] = char_dict
+        request.session['level'] = request.POST['level']
 
         return HttpResponseRedirect(reverse('play_url'))
     else:
         return JsonResponse({ "nothing to see": "try again" })
 
+# play(): displays the game, the form for guessing and guesses so far
+def play(request):
+    if 'secret' not in request.session:
+        initialize(request)
+
+    context = process(request)
+    return render(request, 'game/play.html', context)
+
+# initialize(): helper function to initialize session variables
+def initialize(request):
+    request.session['api_attempt'] = 0
+
+    # get the word
+    secret = get_word(request)
+    if secret == 'ERROR: API GET':
+        return JsonResponse({ "ERROR": "API GET" })
+    else:
+        request.session['secret'] = secret
+
+    request.session['guess_count'] = 6 # no. of guesses allowed
+    request.session['char_dict'] = {}  # dictionary of characters in secret word
+    request.session['missed'] = {}     # dictionary of missed characters
+    request.session['word'] = "_" * len(request.session['secret'])
+
+    # turn on the secret word for development
+    if request.session['name'] == 'Bob':
+        request.session['debug'] = True
+
+    # store the characters of the word as keys in a dictionary
+    # the values are lists of character positions in the word
+    char_dict = {}
+    for index, char in enumerate(request.session['secret']):
+        if char in char_dict:
+            char_dict[char].append(index)
+        else:
+            char_dict[char] = [index]
+    request.session['char_dict'] = char_dict
 
 # get_word(level): request words from api
 # returns a word from randomized list
 def get_word(request):
-    level = request.POST['level']
+    level = request.session['level']
     url = "http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words?"
     url += "difficulty=" + level + "&count="
 
@@ -86,14 +97,6 @@ def get_word(request):
     print "secret: " + word
 
     return word
-
-# play(): displays the game, the form for guessing and guesses so far
-def play(request):
-    if 'secret' not in request.session:
-        return HttpResponseRedirect(reverse('index_url'))
-
-    context = process(request)
-    return render(request, 'game/play.html', context) 
 
 # guess(): endpoint for /guess post action
 # determine game outcome from guess
@@ -186,24 +189,18 @@ def get_count(request):
 
 # reset(): resets session variables
 def reset(request):
-    if 'secret' not in request.session:
-        return HttpResponseRedirect(reverse('index_url'))
-
     try:
         for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict']:
             del request.session[key]
     except KeyError, e:
         print "Oops!  No such key", e
 
-    return HttpResponseRedirect(reverse('index_url'))
+    return HttpResponseRedirect(reverse('play_url'))
 
 # logout()
 def logout(request):
-    if 'secret' not in request.session:
-        return HttpResponseRedirect(reverse('index_url'))
-
     try:
-        for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict', 'name']:
+        for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict', 'name', 'level']:
             del request.session[key]
     except Exception, e:
         print "Oops! Exception", e
