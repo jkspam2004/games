@@ -200,7 +200,7 @@ def reset(request):
 # logout()
 def logout(request):
     try:
-        for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict', 'name', 'level']:
+        for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict', 'name', 'level', 'debug']:
             del request.session[key]
     except Exception, e:
         print "Oops! Exception", e
