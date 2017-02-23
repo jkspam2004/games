@@ -46,7 +46,7 @@
 
             <div id="guessDiv" style="margin-bottom: 50px;">      
                 <h4><span style="padding-right: 15px;">Guesses left:</span><span id="guess_count">{{ guess_count }}</span></h4>
-                <h3><span style="padding: 0 10px 0 42px;">Word: </span><span id="word">{{ word }}</span></h3>
+                <h3><span style="padding-right: 10px;">Word: </span><span id="word">{{ word }}</span></h3>
             </div> <!-- end div#guessDiv -->
 
             <h4 id="info">
@@ -74,9 +74,10 @@
             <div id="status">
             {% if win %}
                 <h3 id="win" class="text-success">You guessed it!</h3>
+                <h6><a target="_blank" class="text-info" href="http://www.dictionary.com/browse/{{ request.session.secret }}">Click for definition</a></h6>
                 <a id="reset" href="/reset" class="btn btn-primary">Play Again</a>
             {% elif secret %}
-                <h4 id="secret" class="text-info">You have no more guesses. The word is <em>'<a target="_blank" href="http://www.dictionary.com/browse/{{ request.session.secret }}">{{ request.session.secret }}</a>'</em>.</h4>
+                <h4 id="secret" class="text-info">You have no more guesses. The word is <a target="_blank" class="text-info" style="text-decoration: underline;" title="Click for definition" href="http://www.dictionary.com/browse/{{ request.session.secret }}">{{ request.session.secret }}</a>.</h4>
                 <a id="reset" href="/reset" class="btn btn-primary">Play Again</a>
             {% endif %}
             </div>

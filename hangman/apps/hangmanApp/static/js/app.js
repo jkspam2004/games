@@ -47,9 +47,10 @@
                     // game status
                     if (data.win) {
                         html_str += "<h3 class='text-success'>You guessed it!</h3>";
+                        html_str += "<h6><a target='_blank' class='text-info' href='http://www.dictionary.com/browse/" + data.secret + "'>Click for definition</a></h6>"
                         html_str += "<a href='/reset' class='btn btn-primary'>Play Again</a>"
                     } else if (data.secret) {
-                        html_str += "<h4 class='text-info'>You have no more guesses.  The word is <em>'<a target='_blank' href='http://www.dictionary.com/browse/" + data.secret + "'>"  + data.secret + "</a>'</em>.</h4>";
+                        html_str += "<h4 class='text-info'>You have no more guesses.  The word is <a target='_blank' class='text-info' style='text-decoration: underline;' title='Click for definition' href='http://www.dictionary.com/browse/" + data.secret + "'>"  + data.secret + "</a>.</h4>";
                         html_str += "<a href='/reset' class='btn btn-primary'>Play Again</a>"
                     }
                     $("div#status").html(html_str);

@@ -172,7 +172,7 @@ def process(request):
     }
 
     # reveal the secret word
-    if game_over and not win:
+    if game_over:
         context['secret'] = request.session['secret']
 
     return context
