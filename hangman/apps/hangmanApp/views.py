@@ -17,12 +17,19 @@ def index(request):
 def start(request):
     if request.method == 'POST':
         request.session['name'] = request.POST['name']
-        request.session['secret'] = get_word(request.POST['level'])
-        request.session['guess_count'] = 6
-        request.session['char_dict'] = {}
+        request.session['api_attempt'] = 0
 
+        # get the word 
+        secret = get_word(request)
+        if secret == 'ERROR: API GET':
+            return JsonResponse({ "ERROR": "API GET" })
+        else:
+            request.session['secret'] = secret
+ 
+        request.session['guess_count'] = 6 # no. of guesses allowed
+        request.session['char_dict'] = {}  # dictionary of characters in secret word
+        request.session['missed'] = {}     # dictionary of missed characters 
         request.session['word'] = "_" * len(request.session['secret'])
-        request.session['missed'] = {} 
 
         # turn on the secret word for development
         if request.POST['name'] == 'Bob':
@@ -36,7 +43,6 @@ def start(request):
                 char_dict[char].append(index)
             else:
                 char_dict[char] = [index]
-
         request.session['char_dict'] = char_dict
 
         return HttpResponseRedirect(reverse('play_url'))
@@ -45,16 +51,40 @@ def start(request):
 
 
 # get_word(level): request words from api
-# takes in a difficulty level as input parameter
-# returns a random word from list
-def get_word(level):
+# returns a word from randomized list
+def get_word(request):
+    level = request.POST['level']
     url = "http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words?"
-    url += "difficulty=" + level
+    url += "difficulty=" + level + "&count="
 
-    response = requests.get(url).content
-    wordlist = response.split("\n")
-    word = random.choice(wordlist)
+    # brand new word_dictionary. first time set up
+    if 'word_dictionary' not in request.session:
+        request.session['word_dictionary'] = {}
+
+    # set up word_dictionary for each level. make request to api and randomize list
+    if level not in request.session['word_dictionary']:
+        print "go to api for level", level 
+        wordlist = requests.get(url).content.split("\n")
+        random.shuffle(wordlist)
+        request.session['word_dictionary'][level] = wordlist
+
+    print "dictionary: ", len(request.session['word_dictionary'][level])
+
+    if len(request.session['word_dictionary'][level]) > 20:
+        # pop one word from randomized list
+        word = request.session['word_dictionary'][level].pop()
+        request.session['api_attempt'] = 0
+    elif request.session['api_attempt'] < 4:
+        # attempt to call the api again if we don't get a word list or we are about to exhaust our list
+        request.session['api_attempt'] += 1 
+        if level in request.session['word_dictionary']:
+            del request.session['word_dictionary'][level]
+        word = get_word(request)
+    else:
+        word = "ERROR: API GET"
+
     print "secret: " + word
+
     return word
 
 # play(): displays the game, the form for guessing and guesses so far
@@ -173,7 +203,8 @@ def logout(request):
         return HttpResponseRedirect(reverse('index_url'))
 
     try:
-        request.session.clear()
+        for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict', 'name']:
+            del request.session[key]
     except Exception, e:
         print "Oops! Exception", e
 
