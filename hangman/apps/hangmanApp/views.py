@@ -25,6 +25,9 @@ def start(request):
 
 # play(): displays the game, the form for guessing and guesses so far
 def play(request):
+    if 'name' not in request.session:
+        return HttpResponseRedirect(reverse('index_url'))
+
     if 'secret' not in request.session:
         initialize(request)
 
@@ -189,6 +192,9 @@ def get_count(request):
 
 # reset(): resets session variables
 def reset(request):
+    if 'name' not in request.session:
+        return HttpResponseRedirect(reverse('index_url'))
+
     try:
         for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict']:
             del request.session[key]
@@ -199,6 +205,9 @@ def reset(request):
 
 # logout()
 def logout(request):
+    if 'name' not in request.session:
+        return HttpResponseRedirect(reverse('index_url'))
+
     try:
         for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict', 'name', 'level', 'debug']:
             del request.session[key]
@@ -209,14 +218,14 @@ def logout(request):
 
 # leaderboard(): show scores and your performance
 def leaderboard(request):
-    if 'secret' not in request.session:
+    if 'name' not in request.session:
         return HttpResponseRedirect(reverse('index_url'))
 
     return render(request, 'dashboard/leaderboard.html')
 
 # settings(): options to choose theme, customize word bank, choose number of guesses
 def settings(request):
-    if 'secret' not in request.session:
+    if 'name' not in request.session:
         return HttpResponseRedirect(reverse('index_url'))
 
     return render(request, 'dashboard/settings.html')

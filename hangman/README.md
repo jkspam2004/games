@@ -118,7 +118,6 @@ hangman/
 * CLI version
 * Add word category
 
-
 * Scoring system:
   * 5 points for solving the word
   * 10 points for solving on first attempt
@@ -135,6 +134,6 @@ hangman/
 Emily Ramesh
 
 ## Credits
-1. apple and tree images from google images
-2. canvas example from [stackoverflow](http://stackoverflow.com/questions/13129479/random-images-falling-like-rain-in-canvas-javascript)
+* apple and tree images from google images
+* canvas example from [stackoverflow](http://stackoverflow.com/questions/13129479/random-images-falling-like-rain-in-canvas-javascript)
 
