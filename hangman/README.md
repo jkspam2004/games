@@ -77,7 +77,7 @@ hangman/
                     apple.png
                     apple_tree.jpg
                 js/
-                    app.js 
+                    play.js 
                     bootstrap.min.js 
                     canvas.js 
                     jquery.min.js 
@@ -108,6 +108,7 @@ hangman/
 * Add support for guessing full words instead of just letters one at a time
 * Add a configurable "difficulty level" and adjust the words that are used based on the user's preference
 * Show visual diagram that indicates incorrect guesses (apples falling from tree instead of traditional hangman)
+* Option to reveal a letter and all its occurrences on game start
 
 ### Next Release plan
 * Children's version: words for K-8 grade level

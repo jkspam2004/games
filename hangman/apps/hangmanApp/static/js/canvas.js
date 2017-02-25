@@ -1,4 +1,5 @@
-function load_canvas() {
+var MODULE = (function() {
+    var myObject = {};
     var ctx;
     var imgBg;
     var imgDrops;
@@ -86,6 +87,7 @@ function load_canvas() {
             }
         }
     }
-
-    return setup; // closure!
-}
+    //window.setup = setup; /* another way of making only setup() global */
+    myObject.setup = setup;
+    return myObject;
+}());

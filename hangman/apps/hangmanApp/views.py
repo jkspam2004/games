@@ -18,6 +18,8 @@ def start(request):
     if request.method == 'POST':
         request.session['name'] = request.POST['name']
         request.session['level'] = request.POST['level']
+        if 'prepopulate' in request.POST:
+            request.session['prepopulate'] = request.POST['prepopulate']
 
         return HttpResponseRedirect(reverse('play_url'))
     else:
@@ -48,7 +50,7 @@ def initialize(request):
     request.session['guess_count'] = 6 # no. of guesses allowed
     request.session['char_dict'] = {}  # dictionary of characters in secret word
     request.session['missed'] = {}     # dictionary of missed characters
-    request.session['word'] = "_" * len(request.session['secret'])
+    request.session['word'] = "_" * len(request.session['secret']) # the word to be displayed, initially underscores
 
     # turn on the secret word for development
     if request.session['name'] == 'Bob':
@@ -64,12 +66,32 @@ def initialize(request):
             char_dict[char] = [index]
     request.session['char_dict'] = char_dict
 
+
+    # prepopulate a random character and its other occurrences if option turned on
+    if 'prepopulate' in request.session:
+        prepopulate = random.choice(char_dict.keys()) # pick one from unique keys
+        length_of_reveal = len(char_dict[prepopulate])
+        print "key to be revealed: ", length_of_reveal, ", length: ", length_of_reveal
+        # we don't want to give everything away, set a threshold
+        attempt = 0
+        while length_of_reveal/len(request.session['secret']) > .50 and attempt < 3:
+            prepopulate = random.choice(char_dict.keys())
+            length_of_reveal = len(char_dict[prepopulate])
+            attempt += 1
+
+        # reveal the occurrences of the randomly chosen character
+        progress_list = list(request.session['word'])
+        for position in request.session['char_dict'][prepopulate]:
+            progress_list[position] = prepopulate
+        request.session['word'] = ''.join(progress_list)
+
+
 # get_word(level): request words from api
 # returns a word from randomized list
 def get_word(request):
     level = request.session['level']
     url = "http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words?"
-    url += "difficulty=" + level + "&count="
+    url += "difficulty=" + level + "&minLength=4" + "&count="
 
     # brand new word_dictionary. first time set up
     if 'word_dictionary' not in request.session:
@@ -209,7 +231,7 @@ def logout(request):
         return HttpResponseRedirect(reverse('index_url'))
 
     try:
-        for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict', 'name', 'level', 'debug']:
+        for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict', 'name', 'level', 'debug', 'prepopulate']:
             del request.session[key]
     except Exception, e:
         print "Oops! Exception", e

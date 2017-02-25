@@ -1,6 +1,6 @@
 (function () {
     $(document).ready(function() {
-        setup = load_canvas();
+        setup = MODULE.setup;
         $.get("/count", function(res) {
             setup(res.guess_count);
         });
@@ -103,5 +103,4 @@
     });
     /* end get csrftoken */
 
-})();
-
+}());

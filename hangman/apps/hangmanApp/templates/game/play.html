@@ -10,7 +10,8 @@
     <link rel="shortcut icon" type="image/png" href="{% static 'img/apple.png' %}"/>
 </head>
 <body>
-    <nav class="navbar navbar-inverse mynav" role="navigation">
+    <!-- TODO: make nav a partial to not repeat -->
+    <nav class="navbar navbar-inverse mynav" role="navigation" aria-live="polite">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar" aria-expanded="false">
@@ -64,6 +65,7 @@
                 <form name="guess" id="guess_form" action="/guess" method="post" class="form-inline">
                     {% csrf_token %}
                     <div class="form-group">
+                        <label for="guess_text">Guess: </label>
                         <input type="text" id="guess_text" name="guess" placeholder="Letter or Word" class="form-control" autoFocus="autoFocus"/>
                     </div>
                     <div class="form-group">
@@ -99,7 +101,7 @@
 
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/app.js' %}"></script>
     <script src="{% static 'js/canvas.js' %}"></script>
+    <script src="{% static 'js/play.js' %}"></script>
 </body>
 </html>
