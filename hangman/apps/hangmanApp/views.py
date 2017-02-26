@@ -68,16 +68,15 @@ def initialize(request):
 
 
     # prepopulate a random character and its other occurrences if option turned on
-    if 'prepopulate' in request.session:
+    # make sure we have more than 1 unique character in the secret word (in case the word is all the same letter)
+    if 'prepopulate' in request.session and len(char_dict.keys()) > 1:
         prepopulate = random.choice(char_dict.keys()) # pick one from unique keys
         length_of_reveal = len(char_dict[prepopulate])
         print "key to be revealed: ", length_of_reveal, ", length: ", length_of_reveal
         # we don't want to give everything away, set a threshold
-        attempt = 0
-        while length_of_reveal/len(request.session['secret']) > .50 and attempt < 3:
+        while length_of_reveal/len(request.session['secret']) > .50:
             prepopulate = random.choice(char_dict.keys())
             length_of_reveal = len(char_dict[prepopulate])
-            attempt += 1
 
         # reveal the occurrences of the randomly chosen character
         progress_list = list(request.session['word'])

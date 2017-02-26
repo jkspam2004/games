@@ -64,7 +64,7 @@ In the next version I plan to implement a leaderboard as well as a settings menu
 
 ### Code Structure
 
-Some files not shown in the below structure for brevity.  The heavy lifting is done in the controller, views.py.  Upon game start, a request is made to a word dictionary API.  The guess count is initiated to 6.  Logic determines if the correct letter or word is guessed.  If the guess is incorrect, the count is decremented by one.  The gameboard is play.html.  The jQuery code is found in app.js.  The game is over when the player guesses the correct word or the guess count goes to 0 without a correct guess.
+Some files not shown in the below structure for brevity.  The heavy lifting is done in the controller, views.py.  Upon game start, a request is made to a word dictionary API.  The guess count is initiated to 6.  Logic determines if the correct letter or word is guessed.  If the guess is incorrect, the count is decremented by one.  The gameboard is play.html.  The jQuery code is found in play.js.  The game is over when the player guesses the correct word or the guess count goes to 0 without a correct guess.
 
 ```
 hangman/
