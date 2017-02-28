@@ -13,7 +13,7 @@ var MODULE = (function() {
         ctx.drawImage(imgBg, 0, 0);
     }
 
-    /* draw the raindrop, y (vertical) position changes */
+    /* draw the apple, y (vertical) position changes */
     function draw(dropNum) {
         drawBackground();
 

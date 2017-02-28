@@ -1,8 +1,7 @@
 (function () {
     $(document).ready(function() {
-        setup = MODULE.setup;
         $.get("/count", function(res) {
-            setup(res.guess_count);
+            MODULE.setup(res.guess_count);
         });
 
         $('#guess_form').on('submit', function(event){
@@ -58,7 +57,7 @@
                     $("#missed_guesses").html(data.missed_guesses); // list of missed guesses
 
                     if (data.missed) { // drop an apple if missed guess
-                        setup(data.guess_count); 
+                        MODULE.setup(data.guess_count); 
                     }
                     
                     if (data.game_over) { // hide the form when game over

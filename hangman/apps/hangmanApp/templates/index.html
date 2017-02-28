@@ -4,7 +4,7 @@
     <div class="container">
         <h2>Let's play hangman</h2>
 
-        <form id="index_form" name="play" action="/start" method="post" class="form-horizontal">
+        <form id="index_form" name="play" action="{% url 'start_url' %}" method="post" class="form-horizontal">
             {% csrf_token %}
             <div class="form-group">
                 <label for="name" class="control-label col-md-2">Enter your name:</label>

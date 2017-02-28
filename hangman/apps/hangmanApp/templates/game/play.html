@@ -22,7 +22,7 @@
             <!-- form for entering guess -->
             <div id="guessForm">
                 {% if not game_over %}
-                <form name="guess" id="guess_form" action="/guess" method="post" class="form-inline">
+                <form name="guess" id="guess_form" action="{% url 'guess_url' %}" method="post" class="form-inline">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="guess_text">Guess: </label>
@@ -40,10 +40,10 @@
             {% if win %}
                 <h3 id="win" class="text-success">You guessed it!</h3>
                 <h6><a target="_blank" class="text-info" href="http://www.dictionary.com/browse/{{ request.session.secret }}">Click for definition</a></h6>
-                <a id="reset" href="/reset" class="btn btn-primary">Play Again</a>
+                <a id="reset" href="{% url 'reset_url' %}" class="btn btn-primary">Play Again</a>
             {% elif secret %}
                 <h4 id="secret" class="text-info">You have no more guesses. The word is <a target="_blank" class="text-info" style="text-decoration: underline;" title="Click for definition" href="http://www.dictionary.com/browse/{{ request.session.secret }}">{{ request.session.secret }}</a>.</h4>
-                <a id="reset" href="/reset" class="btn btn-primary">Play Again</a>
+                <a id="reset" href="{% url 'reset_url' %}" class="btn btn-primary">Play Again</a>
             {% endif %}
             </div>
 
