@@ -9,7 +9,6 @@ import re
 
 # index(): display index page
 def index(request):
-    request.session.clear()
     if 'secret' in request.session:
         return redirect('hangman:play_url')
 
@@ -101,7 +100,7 @@ def initialize(request):
 def get_word(request):
     level = request.session['level']
     #url = "http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words?"
-    url = "http://localhost:7000/words/?"
+    url = "http://hangman.emilyatwork.com/words/?"
     url += "difficulty=" + level + "&minLength=4" + "&count="
 
     # brand new word_dictionary. first time set up
