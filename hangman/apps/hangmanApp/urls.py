@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'^logout$', views.logout, name="logout_url"),
     url(r'^leaderboard$', views.leaderboard, name="leaderboard_url"),
     url(r'^settings$', views.settings, name="settings_url"),
-]
+    url(r'^show/', views.show, name="show_url"),
 
+]

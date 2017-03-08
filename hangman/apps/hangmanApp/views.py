@@ -1,14 +1,17 @@
 from django.shortcuts import render, redirect, HttpResponse
-from django.http import HttpResponseRedirect, JsonResponse
-from django.core.urlresolvers import reverse
+from django.http import JsonResponse
+from ..wordApp.models import WordList
+import urllib
+import httplib
 import requests
 import random
 import re
 
 # index(): display index page
 def index(request):
+    request.session.clear()
     if 'secret' in request.session:
-        return HttpResponseRedirect(reverse('play_url'))
+        return redirect('hangman:play_url')
 
     return render(request, 'index.html')
 
@@ -17,18 +20,23 @@ def index(request):
 def start(request):
     if request.method == 'POST':
         request.session['name'] = request.POST['name']
-        request.session['level'] = request.POST['level']
+
+        if request.POST.get('level_batch1', None):
+            request.session['level'] = request.POST['level_batch1']
+        elif request.POST.get('level_batch2', None):
+            request.session['level'] = request.POST['level_batch2']
+
         if 'prepopulate' in request.POST:
             request.session['prepopulate'] = request.POST['prepopulate']
 
-        return HttpResponseRedirect(reverse('play_url'))
+        return redirect('hangman:play_url')
     else:
         return JsonResponse({ "nothing to see": "try again" })
 
 # play(): displays the game, the form for guessing and guesses so far
 def play(request):
     if 'name' not in request.session:
-        return HttpResponseRedirect(reverse('index_url'))
+        return redirect('hangman:index_url')
 
     if 'secret' not in request.session:
         initialize(request)
@@ -87,9 +95,13 @@ def initialize(request):
 
 # get_word(level): request words from api
 # returns a word from randomized list
+# currently, randomized list stored in session and each request to get_word pops a word 
+# Todo: consider getting one word at random position in list. possible duplicate word
+# or get words in batches
 def get_word(request):
     level = request.session['level']
-    url = "http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words?"
+    #url = "http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words?"
+    url = "http://localhost:7000/words/?"
     url += "difficulty=" + level + "&minLength=4" + "&count="
 
     # brand new word_dictionary. first time set up
@@ -103,7 +115,7 @@ def get_word(request):
         random.shuffle(wordlist)
         request.session['word_dictionary'][level] = wordlist
 
-    print "dictionary: ", len(request.session['word_dictionary'][level])
+    print "dictionary has {} words".format(len(request.session['word_dictionary'][level]))
 
     if len(request.session['word_dictionary'][level]) > 20:
         # pop one word from randomized list
@@ -207,14 +219,14 @@ def process(request):
 # get_count(): return the current guess count
 def get_count(request):
     if 'secret' not in request.session:
-        return HttpResponseRedirect(reverse('index_url'))
+        return redirect('hangman:index_url')
 
     return JsonResponse({ 'guess_count': request.session['guess_count'] });
 
 # reset(): resets session variables
 def reset(request):
     if 'name' not in request.session:
-        return HttpResponseRedirect(reverse('index_url'))
+        return redirect('hangman:index_url')
 
     try:
         for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict']:
@@ -222,31 +234,46 @@ def reset(request):
     except KeyError, e:
         print "Oops!  No such key", e
 
-    return HttpResponseRedirect(reverse('play_url'))
+    return redirect('hangman:play_url')
 
 # logout()
 def logout(request):
     if 'name' not in request.session:
-        return HttpResponseRedirect(reverse('index_url'))
+        return redirect('hangman:index_url')
 
     try:
-        for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict', 'name', 'level', 'debug', 'prepopulate']:
+        for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict', 'name', 'level', 'debug']:
             del request.session[key]
+        if 'prepopulate' in request.session:
+            del request.session['prepopulate']
     except Exception, e:
         print "Oops! Exception", e
 
-    return HttpResponseRedirect(reverse('index_url'))
+    return redirect('hangman:index_url')
 
 # leaderboard(): show scores and your performance
 def leaderboard(request):
     if 'name' not in request.session:
-        return HttpResponseRedirect(reverse('index_url'))
+        return redirect('hangman:index_url')
 
     return render(request, 'dashboard/leaderboard.html')
 
 # settings(): options to choose theme, customize word bank, choose number of guesses
 def settings(request):
     if 'name' not in request.session:
-        return HttpResponseRedirect(reverse('index_url'))
+        return redirect('hangman:index_url')
 
     return render(request, 'dashboard/settings.html')
+
+def show(request):
+    kwargs = {}
+    if request.GET.get('difficulty', None):
+        print "difficulty=", request.GET['difficulty']
+        kwargs['level'] = request.GET['difficulty']
+
+
+    words = WordList.words.show_all(**kwargs)
+    words = list(map((lambda x: x['word']), words))
+    words = "\n".join(words)
+
+    return HttpResponse(words)

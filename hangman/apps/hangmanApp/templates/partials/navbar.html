@@ -10,7 +10,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 {% endif %}
-                <a class="navbar-brand" href="{% url 'index_url' %}">Hangman</a>
+                <a class="navbar-brand" href="{% url 'hangman:index_url' %}">Hangman</a>
                 {% if request.session.level %}
                 <ul class="nav navbar-nav navbar-text">
                     <li>Level {{ request.session.level }}</li>
@@ -26,9 +26,9 @@
                             Welcome, {{ request.session.name }} <b class="caret"></b>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="{% url 'leaderboard_url' %}">Leaderboard</a></li>
-                            <li><a href="{% url 'settings_url' %}">Settings</a></li>
-                            <li><a href="{% url 'logout_url' %}">Logout</a></li>
+                            <li><a href="{% url 'hangman:leaderboard_url' %}">Leaderboard</a></li>
+                            <li><a href="{% url 'hangman:settings_url' %}">Settings</a></li>
+                            <li><a href="{% url 'hangman:logout_url' %}">Logout</a></li>
                         </ul>
                     </li>
                 </ul> <!-- ul.nav -->
