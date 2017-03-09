@@ -12,10 +12,14 @@
             if ($.trim($("#name").val()) === "") {
                 $("#name_error").html("Enter a name");
                 error = true;
+            } else {
+                $("#name_error").html("");
             }
             if ($.trim($("#level_batch1").val()) === "" && $.trim($("#level_batch2").val()) === "") {
                 $("#level_error").html("Select a level");
                 error = true;
+            } else {
+                $("#level_error").html("");
             }
             if (error) {
                 return false;
