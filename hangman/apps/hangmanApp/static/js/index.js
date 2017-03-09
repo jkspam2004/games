@@ -2,6 +2,8 @@
     $(document).ready(function() {
         // toggle the level select form for kids/grown ups
         $('input[type=radio][name=gamelevel]').on('change', function() {
+            $("#level_batch1").val("");
+            $("#level_batch2").val("");
             $('.select_level').toggle();
         });
 
