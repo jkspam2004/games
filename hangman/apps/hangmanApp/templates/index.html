@@ -2,20 +2,20 @@
 
 {% block content %}
     <div class="container">
-        <h2>Let's play hangman</h2>
+        <h2 style="margin-bottom: 30px;">Let's play hangman</h2>
 
         <form id="index_form" name="play" action="{% url 'hangman:start_url' %}" method="post" class="form-horizontal">
             {% csrf_token %}
             <div class="form-group">
-                <label for="name" class="control-label col-md-2">Enter your name:</label>
-                <div class="col-md-3">
+                <label for="name" class="control-label col-md-2">Name</label>
+                <div class="col-md-8">
                     <input type="text" id="name" name="name" value="{{ request.session.name }}" class="form-control" placeholder="Name" />
-                    <span id="errors" class="text-danger"></span>
+                    <span id="name_error" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group">
-                <label for="level" class="control-label col-md-2">Select difficulty:</label>
-                <div class="col-md-3">
+                <label for="level" class="control-label col-md-2">Select difficulty</label>
+                <div class="col-md-8">
                     <div id="radio_select" style="margin-bottom: 10px;">
                         <label class="radio-inline" for="kids">
                             <input type="radio" name="gamelevel" id="kids" value="kids" checked="checked"/>Kids
@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="select_level_main">
-                        <select name="level_batch1" class="form-control select_level">
+                        <select name="level_batch1" id="level_batch1" class="form-control select_level">
                             <option value="">Select Level</option>
                             <option value="ck">K</option>
                             <option value="c1">1</option>
@@ -38,7 +38,7 @@
                             <option value="c7">7</option>
                             <option value="c8">8</option>
                         </select>
-                        <select name="level_batch2" class="form-control select_level" style="display: none;" >
+                        <select name="level_batch2" id="level_batch2" class="form-control select_level" style="display: none;" >
                             <option value="">Select Level</option>
                             <option value="1">1</option>
                             <option value="3">3</option>
@@ -49,16 +49,16 @@
                             <option value="sat">SAT words</option>
                         </select>
                     </div>
-
+                    <span id="level_error" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group">
-                <label for="prepopulate" class="control-label col-md-2">Prepopulate a letter:</label>
-                <div class="col-md-3">
-                    <input type="checkbox" name="prepopulate" id="prepopulate" style="margin-top: 10px;"/>
-                </div>
+                <label for="prepopulate" class="col-md-2 control-label">Prepopulate a letter</label>
+                <div class="col-md-8" style="margin-top: 5px;">
+                    <input type="checkbox" name="prepopulate" id="prepopulate" />
+               </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 30px;">
                 <div class="col-md-3 col-md-offset-2">
                     <button type="submit" class="btn btn-primary" />Play Game</button>
                 </div>

@@ -7,5 +7,5 @@ __pycache__/
 node_modules/
 bower_components/
 djangoEnv/
-static/
+hangman/static/
 *.sqlite3
