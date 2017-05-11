@@ -200,6 +200,8 @@ def process(request):
     if win or (not win and request.session['guess_count'] <= 0):
         game_over = True
 
+    print("word: {}, type: {}".format(request.session['word'], type(request.session['word'])))
+
     context = {
         'length'         : len(request.session['secret']),
         'word'           : ' '.join(request.session['word']),
@@ -237,17 +239,23 @@ def reset(request):
 
 # logout()
 def logout(request):
+    #print(request.session.keys())
     if 'name' not in request.session:
         return redirect('hangman:index_url')
 
     try:
-        for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict', 'name', 'level', 'debug']:
+        for key in ['secret', 'word', 'guess_count', 'missed', 'char_dict', 'name', 'level']:
             del request.session[key]
-        if 'prepopulate' in request.session:
-            del request.session['prepopulate']
     except Exception, e:
         print "Oops! Exception", e
+    finally:
+        if 'prepopulate' in request.session:
+            del request.session['prepopulate']
+        if 'debug' in request.session:
+            del request.session['debug']
 
+
+    #request.session.clear()
     return redirect('hangman:index_url')
 
 # leaderboard(): show scores and your performance
